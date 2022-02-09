@@ -2,9 +2,12 @@ namespace SkillMatrixAPI.Models;
 
 public class SkillCategory
 {
+    private static int _counter;
+
     public SkillCategory(string name) => this.Name = name;
 
-    public string      Name { get; set; }
+    public int    Id   { get; init; } = _counter++;
+    public string Name { get; set; }
 
-    public List<Skill> Skills       { get; init; } = new();
+    public Dictionary<int, Skill> Skills       { get; init; } = new();
 }
