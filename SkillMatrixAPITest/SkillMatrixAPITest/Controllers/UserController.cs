@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace SkillMatrixAPI.Models;
 
 public class UserController
@@ -7,7 +9,7 @@ public class UserController
 
     public bool CreateUser(string email, string password, string? firstName = null, string? lastName = null)//todo add all user parameters or turn into DTO
     {
-        if (!EmailValid(email) || !PasswordValid(password) || !TryCreateUser(email, password, out var user)) return false;
+        if (!EmailValid(email) || !PasswordValid(password) || !TryCreateUser(email, password, out var user)) return false; 
 
         user.FirstName = firstName;
         user.LastName  = lastName;
@@ -41,7 +43,7 @@ public class UserController
 
     public bool UpdateSkill(int userId, int skillId, int level)
     {
-        if (!TryGetUser(userId, out var user) || !SkillIdExists(skillId) || TryGetUserSkill(user, skillId, out var userSkill)) return false;
+        if (!TryGetUser(userId, out var user) || !SkillIdExists(skillId) || !TryGetUserSkill(user, skillId, out var userSkill)) return false;
 
         userSkill.Level = level;
         //todo need to update team coverage
@@ -75,7 +77,7 @@ public class UserController
 
     public bool UpdateLanguage(int userId, int languageId, int level)
     {
-        if (!TryGetUser(userId, out var user) || !LanguageIdExists(languageId) || TryGetUserLanguage(user, languageId, out var userLanguage)) return false;
+        if (!TryGetUser(userId, out var user) || !LanguageIdExists(languageId) || !TryGetUserLanguage(user, languageId, out var userLanguage)) return false;
 
         userLanguage.Level = level;
         //todo need to update team coverage
@@ -94,7 +96,7 @@ public class UserController
     private bool LanguageIdExists(int languageId) => _db.Languages.ContainsKey(languageId);
     private bool LevelInRange(int level) => level is > 0 and < 4;
 
-    private bool TryCreateUser(string email, string password, out User user)
+    private bool TryCreateUser(string email, string password, [MaybeNullWhen(false)] out User user)
     {
         if (UserExists(email))
         {
@@ -105,10 +107,10 @@ public class UserController
         _db.Users.Add(user.Id, user);
         return true;
     }
-    private bool TryGetUser(int userId, out User user) => _db.Users.TryGetValue(userId, out user);
-    private bool TryGetUserSkill(User user, int skillId, out UserSkill userSkill) => user.Skills.TryGetValue(skillId, out userSkill);
-    private bool TryGetUserLanguage(User user, int languageId, out UserLanguage userLanguage) => user.Languages.TryGetValue(languageId, out userLanguage);
+    private bool TryGetUser(int userId, [MaybeNullWhen(false)] out User user) => _db.Users.TryGetValue(userId, out user);
+    private bool TryGetUserSkill(User user, int skillId, [MaybeNullWhen(false)] out UserSkill userSkill) => user.Skills.TryGetValue(skillId, out userSkill);
+    private bool TryGetUserLanguage(User user, int languageId, [MaybeNullWhen(false)] out UserLanguage userLanguage) => user.Languages.TryGetValue(languageId, out userLanguage);
 
-    private bool TryGetSkill(int skillId, out Skill skill) => _db.Skills.TryGetValue(skillId, out skill);
-    private bool TryGetLanguage(int languageId, out Language language) => _db.Languages.TryGetValue(languageId, out language);
+    private bool TryGetSkill(int skillId, [MaybeNullWhen(false)] out Skill skill) => _db.Skills.TryGetValue(skillId, out skill);
+    private bool TryGetLanguage(int languageId, [MaybeNullWhen(false)] out Language language) => _db.Languages.TryGetValue(languageId, out language);
 }
