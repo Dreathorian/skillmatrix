@@ -3,22 +3,22 @@ namespace SkillMatrixAPI.Models;
 public class UserLanguage
 {
 
-    private static Dictionary<(int, int), UserLanguage> languages = new Dictionary<(int, int), UserLanguage>();
+    private static readonly Dictionary<(Language, int), UserLanguage> Languages = new();
     
-    public static UserLanguage Get(int languageID, int level)
+    public static UserLanguage Get(Language language, int level)
     {
-        if (languages.TryGetValue((languageID, level), out var userLanguage)) return userLanguage;
-        userLanguage = new UserLanguage(languageID, level);
-        languages.Add((languageID, level), userLanguage);
+        if (Languages.TryGetValue((language, level), out var userLanguage)) return userLanguage;
+        userLanguage = new UserLanguage(language, level);
+        Languages.Add((language, level), userLanguage);
         return userLanguage;
     }
 
-    private UserLanguage(int languageId, int level)
+    private UserLanguage(Language language, int level)
     {
-        LanguageId = languageId;
+        Language = language;
         Level = level;
     }
 
-    public int LanguageId { get; init; }
+    public Language Language { get; init; }
     public int Level { get; set; }
 }

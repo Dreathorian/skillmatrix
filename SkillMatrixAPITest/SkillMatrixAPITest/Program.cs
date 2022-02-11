@@ -1,21 +1,30 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using SkillMatrixAPI.Models;
+using SkillMatrixAPITest.Controllers;
+using SkillMatrixAPITest.DI;
+using SkillMatrixAPITest.DTOs;
+using SkillMatrixAPITest.Repositories;
 
-Console.WriteLine("Hello, World!");
+SimpleDI.RegisterSingleton<IDatabase, Database>();
+SimpleDI.RegisterSingleton<IUserRepository, UserRepository>();
+SimpleDI.RegisterSingleton<IAdminRepository, AdminRepository>();
+
+var adminController = new AdminController();
 var userController  = new UserController();
-//var adminController = new AdminController();
-int userId     = userController.CreateUser("null", "null");
+
+var userId = adminController.CreateUser(new CreateUserDTO("hi", "nope"));
 Log(userId);
 
-int englishId  = userController.CreateLanguage("english");
+int englishId  = adminController.CreateLanguage("english");
 Log(englishId);
 
 Log(userController.AddLanguage(userId, englishId, 2));
 Log(userController.UpdateLanguage(userId, englishId, 3));
 
-int programmingId = userController.CreateSkillCategory("Programming");
-int cSharpId = userController.CreateSkill("C#", programmingId);
+int programmingId = adminController.CreateSkillCategory("Programming");
+int cSharpId = adminController.CreateSkill("C#", programmingId);
+
 Log(programmingId);
 Log(cSharpId);
 

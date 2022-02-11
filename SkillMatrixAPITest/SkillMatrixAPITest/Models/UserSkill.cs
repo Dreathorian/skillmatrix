@@ -2,12 +2,22 @@ namespace SkillMatrixAPI.Models;
 
 public class UserSkill
 {
-    public UserSkill(int skillId, int level)
+    private static readonly Dictionary<(Skill, int), UserSkill> Skills = new Dictionary<(Skill, int), UserSkill>();
+    
+    public static UserSkill Get(Skill skill, int level)
     {
-        SkillId = skillId;
+        if (Skills.TryGetValue((skill, level), out var userSkill)) return userSkill;
+        userSkill = new UserSkill(skill, level);
+        Skills.Add((skill, level), userSkill);
+        return userSkill;
+    }
+
+    private UserSkill(Skill skill, int level)
+    {
+        Skill = skill;
         Level = level;
     }
 
-    public int SkillId { get; init; }
-    public int Level { get; set; }
+    public Skill Skill { get; init; }
+    public int   Level { get; set; }
 }
